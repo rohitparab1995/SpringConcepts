@@ -4,6 +4,9 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.sampleapp.SpringConcepts.entity.Person;
@@ -16,8 +19,15 @@ public class PersonService {
 	@Autowired
 	PersonRepo personRepo;
 
-	public List<Person> getPersons() {
-		return personRepo.findAll();
+	public List<Person> getPersons(Integer pageNumber, Integer pageSize) {
+		
+		Pageable page = PageRequest.of(pageNumber, pageSize);
+		Page<Person> pagePerson = personRepo.findAll(page);
+		
+		System.out.println("TOTAL Pages = " + pagePerson.getTotalPages());
+		System.out.println("TOTAL Elements = " +pagePerson.getTotalElements());
+		
+		return pagePerson.getContent();
 	}
 
 	public Optional<Person> getPersonById(Integer id) {
